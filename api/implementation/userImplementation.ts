@@ -3,18 +3,28 @@ import UserQueries from "../../src/queries/userQueries";
 import ResponseService from "../../src/services/responseService";
 import { STATUS, CODE } from "../../src/utilities/constants";
 import { MESSAGES } from "../../src/utilities/messages";
+import userQueries from "../../src/queries/userQueries";
+import { error } from "console";
+import { StripTypeScriptTypesOptions } from "module";
 
 interface SignUpData {
   username: string;
   email: string;
   phone: string;
   password: string;
-  [key: string]: any;
 }
 
 interface SignInData {
   email: string;
   password: string;
+}
+
+interface EditProfile {
+  id: string;
+  profilePicture: string;
+  fullName: string;
+  phone: string;
+  country: string;
 }
 
 class UserImplementation {
@@ -96,6 +106,42 @@ class UserImplementation {
         { user: user },
         MESSAGES.RECORD_FOUND
       );
+    } catch (error: any) {
+      ResponseService.status = CODE.INTERNAL_SERVER_ERROR;
+      return ResponseService.responseService(
+        STATUS.EXCEPTION,
+        error.message,
+        MESSAGES.EXCEPTION
+      );
+    }
+  }
+  async editProfile(data: EditProfile) {
+    try {
+      const id = data.id;
+      const user = await userQueries.getUserById(id);
+      if (!user) {
+        ResponseService.status = CODE.RECORD_NOT_FOUND;
+        return ResponseService.responseService(
+          STATUS.NOT_FOUND,
+          [],
+          MESSAGES.USER_NOT_FOUND
+        );
+      }
+
+      if (data.profilePicture) user.profilePicture = data.profilePicture;
+      if (data.fullName) user.fullName = data.fullName;
+      if (data.phone) user.phone = data.phone;
+      if (data.country) user.country = data.country;
+
+      const response = await user.save();
+      ResponseService.status = CODE.OK;
+      if (response) {
+        return ResponseService.responseService(
+          STATUS.SUCCESS,
+          response,
+          MESSAGES.PROFILE_UPDATED
+        );
+      }
     } catch (error: any) {
       ResponseService.status = CODE.INTERNAL_SERVER_ERROR;
       return ResponseService.responseService(

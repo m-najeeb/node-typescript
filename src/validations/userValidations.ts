@@ -17,6 +17,13 @@ interface SignInData {
   password: string;
 }
 
+interface EditProfile {
+  profilePicture?: string;
+  fullName?: string;
+  phone?: string;
+  country?: string;
+}
+
 class UserValidation {
   signUp(userData: SignUpData) {
     const schema = Joi.object({
@@ -40,6 +47,17 @@ class UserValidation {
       password: Joi.string().required(),
     });
 
+    return schema.validate(userData, { abortEarly: false });
+  }
+
+  editProfile(userData: EditProfile) {
+    const schema = Joi.object({
+      id: Joi.string().required(),
+      profilePicture: Joi.string().uri().optional(),
+      fullName: Joi.string().trim().max(55).optional(),
+      phone: Joi.string().trim().length(11).optional(),
+      country: Joi.string().trim().optional(),
+    });
     return schema.validate(userData, { abortEarly: false });
   }
 }

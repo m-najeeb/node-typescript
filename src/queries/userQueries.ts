@@ -1,4 +1,5 @@
-import UserSchema, { IUser } from "../models/userModel";
+import UserSchema from "../models/userModel";
+import { IUser } from "../interfaces/IUser";
 
 class UserQueries {
   async getUserDetailsByData(data: {

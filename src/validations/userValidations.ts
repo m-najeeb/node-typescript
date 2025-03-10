@@ -1,35 +1,11 @@
 import Joi from "joi";
 import { PASSWORD } from "../utilities/constants";
-
-// Define interfaces for each validation schema's input
-interface SignUpData {
-  profilePicture?: string;
-  fullName: string;
-  username: string;
-  email: string;
-  phone: string;
-  country?: string;
-  password: string;
-}
-
-interface SignInData {
-  email: string;
-  password: string;
-}
-
-interface EditProfileData {
-  id: string;
-  profilePicture?: string;
-  fullName?: string;
-  phone?: string;
-  country?: string;
-}
-
-interface ChangePasswordData {
-  email: string;
-  currentPassword: string;
-  newPassword: string;
-}
+import {
+  SignUpData,
+  SignInData,
+  EditProfileData,
+  ChangePasswordData,
+} from "../interfaces/UserData";
 
 class UserValidation {
   signUp(userData: SignUpData) {

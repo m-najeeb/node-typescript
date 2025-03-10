@@ -5,31 +5,12 @@ import { STATUS, CODE } from "../../src/utilities/constants";
 import { MESSAGES } from "../../src/utilities/messages";
 import userQueries from "../../src/queries/userQueries";
 
-interface SignUpData {
-  username: string;
-  email: string;
-  phone: string;
-  password: string;
-}
-
-interface SignInData {
-  email: string;
-  password: string;
-}
-
-interface EditProfileData {
-  id: string;
-  profilePicture: string;
-  fullName: string;
-  phone: string;
-  country: string;
-}
-
-interface ChangePasswordData {
-  email: string;
-  currentPassword: string;
-  newPassword: string;
-}
+import {
+  SignUpData,
+  SignInData,
+  EditProfileData,
+  ChangePasswordData,
+} from "../../src/interfaces/UserData";
 
 class UserImplementation {
   async signUp(data: SignUpData) {

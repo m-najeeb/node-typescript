@@ -1,16 +1,6 @@
 import { StatusType, CodeType, STATUS, CODE } from "../utilities/constants";
 import { MessageType, MESSAGES } from "../utilities/messages";
-
-interface ResponseObject<T = any> {
-  metadata: {
-    status: StatusType;
-    message: string | string[] | MessageType | MessageType[];
-    responseCode: CodeType | undefined;
-  };
-  payload: {
-    data: T;
-  };
-}
+import { ResponseObject } from "../interfaces/ResponseObject";
 
 class ResponseService {
   static status: CodeType;

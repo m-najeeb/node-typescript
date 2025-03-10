@@ -154,7 +154,7 @@ class UserImplementation {
       );
 
       if (!isPasswordMatch) {
-        ResponseService.status = CODE.NOT_ACCEPTED;
+        ResponseService.status = CODE.BAD_REQUEST;
         return ResponseService.responseService(
           STATUS.ERROR,
           [],
@@ -168,7 +168,7 @@ class UserImplementation {
       );
 
       if (isNewPasswordSame) {
-        ResponseService.status = CODE.NOT_ACCEPTED;
+        ResponseService.status = CODE.BAD_REQUEST;
         return ResponseService.responseService(
           STATUS.ERROR,
           [],

@@ -17,11 +17,18 @@ interface SignInData {
   password: string;
 }
 
-interface EditProfile {
+interface EditProfileData {
+  id: string;
   profilePicture?: string;
   fullName?: string;
   phone?: string;
   country?: string;
+}
+
+interface ChangePasswordData {
+  email: string;
+  currentPassword: string;
+  newPassword: string;
 }
 
 class UserValidation {
@@ -50,13 +57,24 @@ class UserValidation {
     return schema.validate(userData, { abortEarly: false });
   }
 
-  editProfile(userData: EditProfile) {
+  editProfile(userData: EditProfileData) {
     const schema = Joi.object({
       id: Joi.string().required(),
       profilePicture: Joi.string().uri().optional(),
       fullName: Joi.string().trim().max(55).optional(),
       phone: Joi.string().trim().length(11).optional(),
       country: Joi.string().trim().optional(),
+    });
+    return schema.validate(userData, { abortEarly: false });
+  }
+
+  changePassword(userData: ChangePasswordData) {
+    const schema = Joi.object({
+      email: Joi.string().trim().email().required(),
+      currentPassword: Joi.string().required(),
+      newPassword: Joi.string().regex(PASSWORD.REGEX).required().messages({
+        "string.pattern.base": PASSWORD.MESSAGE_FORMAT,
+      }),
     });
     return schema.validate(userData, { abortEarly: false });
   }

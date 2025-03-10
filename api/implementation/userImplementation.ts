@@ -4,8 +4,6 @@ import ResponseService from "../../src/services/responseService";
 import { STATUS, CODE } from "../../src/utilities/constants";
 import { MESSAGES } from "../../src/utilities/messages";
 import userQueries from "../../src/queries/userQueries";
-import { error } from "console";
-import { StripTypeScriptTypesOptions } from "module";
 
 interface SignUpData {
   username: string;
@@ -19,12 +17,18 @@ interface SignInData {
   password: string;
 }
 
-interface EditProfile {
+interface EditProfileData {
   id: string;
   profilePicture: string;
   fullName: string;
   phone: string;
   country: string;
+}
+
+interface ChangePasswordData {
+  email: string;
+  currentPassword: string;
+  newPassword: string;
 }
 
 class UserImplementation {
@@ -115,7 +119,7 @@ class UserImplementation {
       );
     }
   }
-  async editProfile(data: EditProfile) {
+  async editProfile(data: EditProfileData) {
     try {
       const id = data.id;
       const user = await userQueries.getUserById(id);
@@ -142,6 +146,68 @@ class UserImplementation {
           MESSAGES.PROFILE_UPDATED
         );
       }
+    } catch (error: any) {
+      ResponseService.status = CODE.INTERNAL_SERVER_ERROR;
+      return ResponseService.responseService(
+        STATUS.EXCEPTION,
+        error.message,
+        MESSAGES.EXCEPTION
+      );
+    }
+  }
+  async changePassword(data: ChangePasswordData) {
+    try {
+      const { email, currentPassword, newPassword } = data;
+      const user = await userQueries.getUserByEmail(email);
+      if (!user) {
+        ResponseService.status = CODE.RECORD_NOT_FOUND;
+        return ResponseService.responseService(
+          STATUS.NOT_FOUND,
+          [],
+          MESSAGES.EMAIL_NOT_FOUND
+        );
+      }
+      const isPasswordMatch = bcrypt.compare(
+        currentPassword,
+        user.password ?? ""
+      );
+
+      if (!isPasswordMatch) {
+        ResponseService.status = CODE.NOT_ACCEPTED;
+        return ResponseService.responseService(
+          STATUS.NOT_ACCEPTED,
+          [],
+          MESSAGES.PASSWORD_MISMATCH
+        );
+      }
+
+      const isNewPasswordSame = bcrypt.compare(
+        newPassword,
+        user.password ?? ""
+      );
+
+      if (!isNewPasswordSame) {
+        ResponseService.status = CODE.NOT_ACCEPTED;
+        return ResponseService.responseService(
+          STATUS.NOT_ACCEPTED,
+          [],
+          MESSAGES.PASSWORD_SAME_AS_OLD
+        );
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+      const response = await UserQueries.updateUserPassword(
+        email,
+        hashedNewPassword
+      );
+
+      ResponseService.status = CODE.OK;
+      return ResponseService.responseService(
+        STATUS.SUCCESS,
+        response,
+        MESSAGES.PASSWORD_UPDATED
+      );
     } catch (error: any) {
       ResponseService.status = CODE.INTERNAL_SERVER_ERROR;
       return ResponseService.responseService(

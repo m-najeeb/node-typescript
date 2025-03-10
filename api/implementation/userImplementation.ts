@@ -148,7 +148,7 @@ class UserImplementation {
           MESSAGES.EMAIL_NOT_FOUND
         );
       }
-      const isPasswordMatch = bcrypt.compare(
+      const isPasswordMatch = await bcrypt.compare(
         currentPassword,
         user.password ?? ""
       );
@@ -162,12 +162,12 @@ class UserImplementation {
         );
       }
 
-      const isNewPasswordSame = bcrypt.compare(
+      const isNewPasswordSame = await bcrypt.compare(
         newPassword,
         user.password ?? ""
       );
 
-      if (!isNewPasswordSame) {
+      if (isNewPasswordSame) {
         ResponseService.status = CODE.NOT_ACCEPTED;
         return ResponseService.responseService(
           STATUS.ERROR,

@@ -162,7 +162,7 @@ class UserImplementation {
       if (!user) {
         ResponseService.status = CODE.RECORD_NOT_FOUND;
         return ResponseService.responseService(
-          STATUS.NOT_FOUND,
+          STATUS.ERROR,
           [],
           MESSAGES.EMAIL_NOT_FOUND
         );
@@ -175,7 +175,7 @@ class UserImplementation {
       if (!isPasswordMatch) {
         ResponseService.status = CODE.NOT_ACCEPTED;
         return ResponseService.responseService(
-          STATUS.NOT_ACCEPTED,
+          STATUS.ERROR,
           [],
           MESSAGES.PASSWORD_MISMATCH
         );
@@ -189,7 +189,7 @@ class UserImplementation {
       if (!isNewPasswordSame) {
         ResponseService.status = CODE.NOT_ACCEPTED;
         return ResponseService.responseService(
-          STATUS.NOT_ACCEPTED,
+          STATUS.ERROR,
           [],
           MESSAGES.PASSWORD_SAME_AS_OLD
         );
